@@ -7,13 +7,18 @@ from PyPDF2 import PdfFileMerger
 import os
 
 def merge():
-    pdflocation = input('Enter the folder path to the PDFs, or press enter to use current directory "/Documents/Merge": ')
-    print(pdflocation)
+    pdflocation = input('Enter the full folder path to the PDFs, or press enter to use current directory at {}": '.format(os.getcwd()))
+
     if len(pdflocation)>0:
         os.chdir(pdflocation)
     source_dir = os.getcwd()
+    print("Using directory named ", source_dir)
 
     outputname = input("Enter the desired output new file name: ")+'.pdf'
+    if outputname in os.listdir(source_dir):
+        newname = input("A file named {} already exists in this directory. Enter a new file name, or press enter to overwrite existing file: ".format(outputname))
+        if len(newname)>0:
+            outputname = newname+'.pdf'
 
     while True:
         selectpdf = input("Enter the name of the first pdf, or press enter to merge all pdfs in current directory: ")
@@ -35,7 +40,7 @@ def merge():
             if item.endswith('pdf'):
                 #print(item, type(item))
                 merger.append(item)
-        print("Merging ", os.listdir(source_dir), " as ", outputname)
+        print("Merging ", [item for item in os.listdir(source_dir) if item.endswith('pdf')], " as ", outputname)
 
     else:
         while len(selectpdf)>0:
